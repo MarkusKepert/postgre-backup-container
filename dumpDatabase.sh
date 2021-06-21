@@ -1,15 +1,25 @@
 DUMP_FILE_NAME="backupOn`date +%Y-%m-%d-%H-%M`.dump"
 echo "Creating dump: $DUMP_FILE_NAME"
 
-cd pg_backup
+backup_date=`date +%d-%m-%Y`
+backup_dir=/pg_backup
 
-pg_dump -C -w --format=c --blobs > $DUMP_FILE_NAME
+cd $backup_dir
 
-if [ $? -ne 0 ]; then
-  rm $DUMP_FILE_NAME
-  echo "Back up not created, check db connection settings"
-  exit 1
-fi
+
+#Numbers of days you want to keep copie of your databases
+number_of_days=3
+databases=`psql -l -t | cut -d'|' -f1 | sed -e 's/ //g' -e '/^$/d'`
+for i in $databases; do  if [ "$i" != "postgres" ] && [ "$i" != "template0" ] && [ "$i" != "template1" ] && [ "$i" != "template_postgis" ]; then    
+    echo Dumping $i to $backup_dir/$i\_$backup_date.sql    
+    pg_dump $i > $backup_dir/$i\_$backup_date.sql
+    bzip2 $backup_dir/$i\_$backup_date.sql
+    ln -fs $backup_dir/$i\_$backup_date.sql.bz2 $nightly_dir$i-nightly.sql.bz2
+
+  fi
+done
+find $backup_dir -type f -prune -mtime +$number_of_days -exec rm -f {} \;
+
 
 echo 'Successfully Backed Up'
 exit 0

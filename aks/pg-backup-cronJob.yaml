@@ -17,8 +17,6 @@ spec:
               value: "PGHOST_PLACEHOLDER"
             - name: PGPORT
               value: "PGPORT_PLACEHOLDER"
-            - name: PGDATABASE
-              value: "PGDATABASE_PLACEHOLDER"
             - name: PGUSER
               value: "PGUSER_PLACEHOLDER"
             - name: PGPASSWORD
