@@ -8,4 +8,4 @@ spec:
   storageClassName: backup-storage
   resources:
     requests:
-      storage: 5Gi
+      storage: 25Gi
