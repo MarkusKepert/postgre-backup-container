@@ -13,14 +13,16 @@ databases=`psql -l -t | cut -d'|' -f1 | sed -e 's/ //g' -e '/^$/d'`
 for i in $databases; do  if [ "$i" != "postgres" ] && [ "$i" != "template0" ] && [ "$i" != "template1" ] && [ "$i" != "template_postgis" ]; then    
     echo Dumping $i to $backup_dir/$i\_$backup_date.sql    
     pg_dump $i > $backup_dir/$i\_$backup_date.sql
+    echo bzip $backup_dir/$i\_$backup_date.sql
     bzip2 $backup_dir/$i\_$backup_date.sql
     ln -fs $backup_dir/$i\_$backup_date.sql.bz2 $nightly_dir$i-nightly.sql.bz2
 
   fi
 done
 
-mc alias set s3target $S3_URL $S3_KEY $S3_SECRET
+echo Sync to external S3 storage
 
+mc alias set s3target $S3_URL $S3_KEY $S3_SECRET
 mc mirror $backup_dir s3target/$S3_BUCKET/prod-postgresql-replicaset/
 
 
