@@ -18,6 +18,12 @@ for i in $databases; do  if [ "$i" != "postgres" ] && [ "$i" != "template0" ] &&
 
   fi
 done
+
+mc alias set s3target $S3_URL $S3_KEY $S3_SECRET
+
+mc mirror $backup_dir s3target/$S3_BUCKET/prod-postgresql-replicaset/
+
+
 find $backup_dir -type f -prune -mtime +$number_of_days -exec rm -f {} \;
 
 

@@ -44,3 +44,7 @@ Execute below command:
 ` docker run -v /d/backup:/pg_backup $DOCKER_USER/postgres-back-up `
 
 3. Verify that it is an improvement and commit your changes ;)
+
+4. Push to your repo
+
+` docker push $DOCKER_USER/pgbackup `
